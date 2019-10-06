@@ -7,7 +7,7 @@ const nlp = require("./helpers/nlp");
 const generation = require("./helpers/generation");
 
 const app = express();
-const port = 3000;
+const port = 8081;
 
 app.use(express.static("static"));
 app.set("views", __dirname + "/templates");
@@ -33,4 +33,4 @@ app.get("/poem", async (req, res) => {
     });
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => console.log(`App listening on port ${port}!`));

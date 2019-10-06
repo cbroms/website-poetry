@@ -4,6 +4,7 @@
   "description": "Describing websites with poems",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,13 +21,10 @@
     "compromise": "^11.14.3",
     "express": "^4.17.1",
     "express-react-views": "^0.11.0",
-    "html-to-text": "^5.1.1",
-    "node": "^12.11.0",
     "node-html-parser": "^1.1.16",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "request": "^2.88.0",
-    "request-promise": "^4.2.4",
     "rita": "^1.3.94",
     "sentiment": "^5.0.2"
   }

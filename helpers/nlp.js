@@ -35,10 +35,10 @@ exports.extractEntities = text => {
     }
 
     return {
-        people: pe.flat(),
-        orgs: or.flat(),
-        places: pl.flat(),
-        topics: to.flat()
+        people: [],
+        orgs: [],
+        places: [],
+        topics: [].concat.apply([], to) // can use to.flat() in Node 12.0
     };
 };
 
