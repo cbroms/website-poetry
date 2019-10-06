@@ -10,6 +10,9 @@ const app = express();
 const port = 3000;
 
 app.use(express.static("static"));
+app.set("views", __dirname + "/templates");
+app.set("view engine", "jsx");
+app.engine("jsx", require("express-react-views").createEngine());
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname + "/templates/index.html"));
@@ -20,20 +23,13 @@ app.get("/poem", async (req, res) => {
         cleanText = parsing.parse(body);
 
         entities = nlp.extractEntities(cleanText);
+        title = nlp.extractTitle(entities.topics);
         sentiment = nlp.sentiment(cleanText);
 
         pos = nlp.getSimPOS(sentiment, cleanText);
-        generation.createSentences(pos, entities);
-        // console.log(sentiment);
-        console.log();
+        sentences = generation.createSentences(pos, entities);
 
-        // console.log(
-        //     entities.orgs,
-        //     entities.people,
-        //     entities.places,
-        //     entities.topics
-        // );
-        res.send("asdg");
+        res.render("index", { sentences: sentences, title: title });
     });
 });
 

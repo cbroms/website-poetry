@@ -8,9 +8,6 @@ exports.parse = html => {
     const root = nodeParser.parse(html);
     const text = root.structuredText;
     return text.split("\n");
-    // return nlp(text)
-    //     .sentences()
-    //     .out("array");
 };
 
 // clean and normalize the sentences
@@ -23,4 +20,10 @@ exports.clean = text => {
         cleaned.push(newSentence);
     }
     return cleaned;
+};
+
+exports.title = html => {
+    const root = nodeParser.parse(html);
+    const title = root.querySelector("title");
+    return title.text;
 };
