@@ -6,37 +6,32 @@ var exports = (module.exports = {});
 
 // create an object with the entities from the text
 exports.extractEntities = text => {
-    pe = [];
-    or = [];
-    pl = [];
     to = [];
+    or = [];
 
-    for (const sentence of text) {
-        // pe.push(
-        //     nlp(sentence)
-        //         .people()
-        //         .out("array")
-        // );
-        // or.push(
-        //     nlp(sentence)
-        //         .organizations()
-        //         .out("array")
-        // );
-        // pl.push(
-        //     nlp(sentence)
-        //         .places()
-        //         .out("array")
-        // );
+    // select 200 random sentences to use
+    let sentences = [];
+    for (let i = 0; i < 200; i++) {
+        const sent = text[Math.floor(Math.random() * (text.length - 1)) + 1];
+        sentences.push(sent);
+    }
+
+    for (const sentence of sentences) {
         to.push(
             nlp(sentence)
                 .topics()
                 .out("array")
         );
+        // or.push(
+        //     nlp(sentence)
+        //         .organizations()
+        //         .out("array")
+        // );
     }
 
     return {
         people: [],
-        orgs: [],
+        orgs: [].concat.apply([], or),
         places: [],
         topics: [].concat.apply([], to) // can use to.flat() in Node 12.0
     };
@@ -45,7 +40,9 @@ exports.extractEntities = text => {
 // get the mean sentiment of an array of strings and normalize on (-10, 10)
 // randomly select a smaller portion of string to check so we save time
 exports.sentiment = text => {
+    // take 60 random samples from the array
     const samples = text.length <= 60 ? text.length : 60;
+
     let rands = [];
     for (let i = 0; i < samples; i++) {
         rands.push(Math.floor(Math.random() * (text.length - 1)) + 1);
@@ -61,7 +58,8 @@ exports.sentiment = text => {
     return Math.min(Math.max((total / samples) * 100, -10), 10);
 };
 
-// get the most common topic in the list as the summary's title
+// get the most common topic in the list to use as the summary's title
+// https://codereview.stackexchange.com/a/177989
 exports.extractTitle = topics => {
     let counted = topics.reduce((acc, curr) => {
         if (curr in acc) {
@@ -78,14 +76,21 @@ exports.extractTitle = topics => {
     return mode;
 };
 
-// get nouns similar in sentiment to the text's overall sentiment
+// get parts of speech similar in sentiment to the text's overall sentiment
 exports.getSimPOS = (senti, text) => {
     const sentiment = new Sentiment();
     const sentimentSign = Math.sign(senti);
 
     let res = { nouns: [], verbs: [], adverbs: [], adjectives: [] };
 
-    for (const sentence of text) {
+    // select 300 random sentences to use
+    let sentences = [];
+    for (let i = 0; i < 300; i++) {
+        const sent = text[Math.floor(Math.random() * (text.length - 1)) + 1];
+        sentences.push(sent);
+    }
+
+    for (const sentence of sentences) {
         const tokens = rita.tokenize(sentence);
         for (const token of tokens) {
             const scoreSign = Math.sign(sentiment.analyze(token).score);

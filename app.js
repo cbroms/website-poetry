@@ -19,15 +19,19 @@ app.get("/", (req, res) => {
 });
 
 app.get("/poem", async (req, res) => {
+    if (req.query.page === undefined) {
+        res.sendStatus(404);
+    }
     request(req.query.page, (err, resp, body) => {
-        cleanText = parsing.parse(body);
+        const cleanText = parsing.parse(body);
+        // takes too long on large texts; clean after generation
+        //cleanText = parsing.clean(cleanText);
+        const entities = nlp.extractEntities(cleanText);
+        const title = nlp.extractTitle(entities.topics);
+        const sentiment = nlp.sentiment(cleanText);
+        const pos = nlp.getSimPOS(sentiment, cleanText);
 
-        entities = nlp.extractEntities(cleanText);
-        title = nlp.extractTitle(entities.topics);
-        sentiment = nlp.sentiment(cleanText);
-
-        pos = nlp.getSimPOS(sentiment, cleanText);
-        sentences = generation.createSentences(pos, entities);
+        const sentences = generation.createSentences(pos, entities);
 
         res.render("index", { sentences: sentences, title: title });
     });
